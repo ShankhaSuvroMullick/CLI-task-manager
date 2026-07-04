@@ -10,7 +10,6 @@ from task_manager import (
     undo_last,
 )
 
-
 app = typer.Typer(help="CLI Task Manager")
 
 
@@ -18,41 +17,36 @@ app = typer.Typer(help="CLI Task Manager")
 def add(
     titles: List[str] = typer.Argument(..., help="Titles of tasks to add"),
     due: Optional[str] = typer.Option(None, "--due", help="Due date YYYY-MM-DD"),
-    priority: str = typer.Option(
-        "medium", "--priority", help="Priority: low, medium, high"
-    ),
+    priority: str = typer.Option("medium", "--priority", help="Priority: low, medium, high"),
 ):
     """Add one or more tasks."""
     try:
-        # validate priority
         if priority not in ("low", "medium", "high"):
             typer.echo("Error: Priority must be low, medium, or high.")
             raise typer.Exit(code=1)
 
-        # validate date format if provided
         if due:
             from datetime import datetime
-
             try:
                 datetime.strptime(due, "%Y-%m-%d")
             except ValueError:
-                typer.echo(
-                    "Error: Date must be in YYYY-MM-DD format. Example: 2024-12-31"
-                )
+                typer.echo("Error: Date must be in YYYY-MM-DD format. Example: 2024-12-31")
                 raise typer.Exit(code=1)
 
         added = add_task(titles, due_date=due, priority=priority)
         for task in added:
-            due_str = f" (due: {task['due']})" if task["due"] else ""
-            pri_str = f" [{task['priority'].upper()}]"
-            typer.echo(f"Added task #{task['id']}: {task['title']}{pri_str}{due_str}")
+            due_str = f" (due: {task.due})" if task.due else ""
+            pri_str = f" [{task.priority.upper()}]"
+            typer.echo(f"Added task #{task.id}: {task.title}{pri_str}{due_str}")
     except ValueError as e:
         typer.echo(f"Error: {e}")
         raise typer.Exit(code=1)
 
 
 @app.command()
-def delete(task_ids: List[int] = typer.Argument(..., help="IDs of tasks to delete")):
+def delete(
+    task_ids: List[int] = typer.Argument(..., help="IDs of tasks to delete"),
+):
     """Delete one or more tasks by ID."""
     try:
         deleted, not_found = delete_task(task_ids)
@@ -94,7 +88,7 @@ def edit(
     try:
         task = edit_task(task_id, new_title)
         if task:
-            typer.echo(f"Task #{task['id']} updated to: {task['title']}")
+            typer.echo(f"Task #{task.id} updated to: {task.title}")
         else:
             typer.echo(f"No task found with ID {task_id}")
             raise typer.Exit(code=1)
@@ -108,14 +102,11 @@ def list_tasks(
     done: bool = typer.Option(False, "--done", help="Show only completed tasks"),
     pending: bool = typer.Option(False, "--pending", help="Show only pending tasks"),
     overdue: bool = typer.Option(False, "--overdue", help="Show only overdue tasks"),
-    priority: Optional[str] = typer.Option(
-        None, "--priority", help="Filter by priority: low, medium, high"
-    ),
+    priority: Optional[str] = typer.Option(None, "--priority", help="Filter by priority: low, medium, high"),
 ):
     """List all tasks."""
     try:
         from datetime import datetime
-
         today = datetime.today().strftime("%Y-%m-%d")
 
         tasks = get_all_tasks()
@@ -124,21 +115,18 @@ def list_tasks(
             typer.echo("No tasks yet. Add one with: python main.py add 'Your task'")
             return
 
-        # apply filters
         if done:
-            tasks = [t for t in tasks if t["done"] is True]
+            tasks = [t for t in tasks if t.done is True]
         elif pending:
-            tasks = [t for t in tasks if t["done"] is False]
+            tasks = [t for t in tasks if t.done is False]
         elif overdue:
-            tasks = [
-                t for t in tasks if t.get("due") and t["due"] < today and not t["done"]
-            ]
+            tasks = [t for t in tasks if t.due and t.due < today and not t.done]
 
         if priority:
             if priority not in ("low", "medium", "high"):
                 typer.echo("Error: Priority must be low, medium, or high.")
                 raise typer.Exit(code=1)
-            tasks = [t for t in tasks if t.get("priority") == priority]
+            tasks = [t for t in tasks if t.priority == priority]
 
         if not tasks:
             typer.echo("No tasks match that filter.")
@@ -147,10 +135,10 @@ def list_tasks(
         typer.echo("\nYour Tasks:")
         typer.echo("-" * 40)
         for task in tasks:
-            status = "DONE" if task["done"] else "TODO"
-            due_str = f" (due: {task['due']})" if task.get("due") else ""
-            pri = task.get("priority", "medium").upper()
-            typer.echo(f"  [{status}] #{task['id']} [{pri}] - {task['title']}{due_str}")
+            status = "DONE" if task.done else "TODO"
+            due_str = f" (due: {task.due})" if task.due else ""
+            pri = task.priority.upper()
+            typer.echo(f"  [{status}] #{task.id} [{pri}] - {task.title}{due_str}")
         typer.echo("")
 
     except ValueError as e:
@@ -170,8 +158,7 @@ def search(
             typer.echo("No tasks yet.")
             return
 
-        # search — case insensitive
-        results = [t for t in tasks if query.lower() in t["title"].lower()]
+        results = [t for t in tasks if query.lower() in t.title.lower()]
 
         if not results:
             typer.echo(f"No tasks found matching '{query}'")
@@ -180,24 +167,14 @@ def search(
         typer.echo(f"\nSearch results for '{query}':")
         typer.echo("-" * 40)
         for task in results:
-            status = "DONE" if task["done"] else "TODO"
-            due_str = f" (due: {task['due']})" if task.get("due") else ""
-            pri = task.get("priority", "medium").upper()
-            typer.echo(f"  [{status}] #{task['id']} [{pri}] - {task['title']}{due_str}")
+            status = "DONE" if task.done else "TODO"
+            due_str = f" (due: {task.due})" if task.due else ""
+            pri = task.priority.upper()
+            typer.echo(f"  [{status}] #{task.id} [{pri}] - {task.title}{due_str}")
         typer.echo("")
 
     except ValueError as e:
         typer.echo(f"Error: {e}")
-        raise typer.Exit(code=1)
-
-
-@app.command()
-def undo():
-    """Undo the last action."""
-    if undo_last():
-        typer.echo("Last action undone successfully.")
-    else:
-        typer.echo("Nothing to undo.")
         raise typer.Exit(code=1)
 
 
@@ -208,7 +185,6 @@ def export(
     """Export tasks to a file."""
     try:
         from datetime import datetime
-
         tasks = get_all_tasks()
 
         if not tasks:
@@ -220,15 +196,14 @@ def export(
         if csv:
             filename = f"tasks_{timestamp}.csv"
             with open(filename, "w") as f:
-                # header row
                 f.write("id,title,done,priority,due\n")
                 for task in tasks:
                     f.write(
-                        f"{task['id']},"
-                        f"{task['title']},"
-                        f"{task['done']},"
-                        f"{task.get('priority', 'medium')},"
-                        f"{task.get('due', '')}\n"
+                        f"{task.id},"
+                        f"{task.title},"
+                        f"{task.done},"
+                        f"{task.priority},"
+                        f"{task.due or ''}\n"
                     )
         else:
             filename = f"tasks_{timestamp}.txt"
@@ -236,12 +211,10 @@ def export(
                 f.write("MY TASKS\n")
                 f.write("=" * 40 + "\n\n")
                 for task in tasks:
-                    status = "DONE" if task["done"] else "TODO"
-                    due_str = f" (due: {task['due']})" if task.get("due") else ""
-                    pri = task.get("priority", "medium").upper()
-                    f.write(
-                        f"[{status}] #{task['id']} [{pri}] - {task['title']}{due_str}\n"
-                    )
+                    status = "DONE" if task.done else "TODO"
+                    due_str = f" (due: {task.due})" if task.due else ""
+                    pri = task.priority.upper()
+                    f.write(f"[{status}] #{task.id} [{pri}] - {task.title}{due_str}\n")
 
         typer.echo(f"Tasks exported to {filename}")
 
@@ -255,7 +228,6 @@ def stats():
     """Show task statistics."""
     try:
         from datetime import datetime
-
         today = datetime.today().strftime("%Y-%m-%d")
 
         tasks = get_all_tasks()
@@ -264,15 +236,13 @@ def stats():
             typer.echo("No tasks yet.")
             return
 
-        total = len(tasks)
-        completed = len([t for t in tasks if t["done"] is True])
-        pending = len([t for t in tasks if t["done"] is False])
-        overdue = len(
-            [t for t in tasks if t.get("due") and t["due"] < today and not t["done"]]
-        )
-        high = len([t for t in tasks if t.get("priority") == "high"])
-        medium = len([t for t in tasks if t.get("priority", "medium") == "medium"])
-        low = len([t for t in tasks if t.get("priority") == "low"])
+        total     = len(tasks)
+        completed = len([t for t in tasks if t.done is True])
+        pending   = len([t for t in tasks if t.done is False])
+        overdue   = len([t for t in tasks if t.due and t.due < today and not t.done])
+        high      = len([t for t in tasks if t.priority == "high"])
+        medium    = len([t for t in tasks if t.priority == "medium"])
+        low       = len([t for t in tasks if t.priority == "low"])
 
         typer.echo("\n📊 Task Statistics")
         typer.echo("-" * 40)
@@ -288,6 +258,16 @@ def stats():
 
     except ValueError as e:
         typer.echo(f"Error: {e}")
+        raise typer.Exit(code=1)
+
+
+@app.command()
+def undo():
+    """Undo the last action."""
+    if undo_last():
+        typer.echo("Last action undone successfully.")
+    else:
+        typer.echo("Nothing to undo.")
         raise typer.Exit(code=1)
 
 

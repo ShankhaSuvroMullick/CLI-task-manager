@@ -1,0 +1,19 @@
+MY TASKS
+========================================
+
+[DONE] #1 [MEDIUM] - Buy groceries (due: 2024-01-01)
+[TODO] #2 [MEDIUM] - Read a book (due: 2099-12-31)
+[TODO] #3 [MEDIUM] - Call dentist
+[TODO] #4 [LOW] - Buy groceries
+[TODO] #5 [HIGH] - Finish project
+[TODO] #6 [MEDIUM] - Read a book
+[TODO] #7 [MEDIUM] - Buy groceries
+[TODO] #8 [MEDIUM] - Buy clothes
+[TODO] #9 [MEDIUM] - Read a book
+[TODO] #10 [MEDIUM] - Call dentist
+[TODO] #11 [MEDIUM] - Buy groceries
+[TODO] #12 [MEDIUM] - Buy clothes
+[TODO] #13 [MEDIUM] - Read a book
+[TODO] #14 [MEDIUM] - Call dentist
+[TODO] #15 [MEDIUM] - Buy groceries
+[TODO] #16 [MEDIUM] - Read a book

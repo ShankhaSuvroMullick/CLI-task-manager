@@ -3,19 +3,22 @@
     "id": 1,
     "title": "Buy groceries",
     "done": false,
-    "due": "2024-01-01"
+    "due": "2024-01-01",
+    "priority": "medium"
   },
   {
     "id": 2,
     "title": "Read a book",
     "done": false,
-    "due": "2099-12-31"
+    "due": "2099-12-31",
+    "priority": "medium"
   },
   {
     "id": 3,
     "title": "Call dentist",
     "done": false,
-    "due": null
+    "due": null,
+    "priority": "medium"
   },
   {
     "id": 4,
@@ -62,6 +65,48 @@
   {
     "id": 10,
     "title": "Call dentist",
+    "done": false,
+    "due": null,
+    "priority": "medium"
+  },
+  {
+    "id": 11,
+    "title": "Buy groceries",
+    "done": false,
+    "due": null,
+    "priority": "medium"
+  },
+  {
+    "id": 12,
+    "title": "Buy clothes",
+    "done": false,
+    "due": null,
+    "priority": "medium"
+  },
+  {
+    "id": 13,
+    "title": "Read a book",
+    "done": false,
+    "due": null,
+    "priority": "medium"
+  },
+  {
+    "id": 14,
+    "title": "Call dentist",
+    "done": false,
+    "due": null,
+    "priority": "medium"
+  },
+  {
+    "id": 15,
+    "title": "Buy groceries",
+    "done": false,
+    "due": null,
+    "priority": "medium"
+  },
+  {
+    "id": 16,
+    "title": "Read a book",
     "done": false,
     "due": null,
     "priority": "medium"
